@@ -167,13 +167,14 @@ public class OntologyClass {
             ontoloyclassess.put("dataproperties", getdataproprtydetailsforspecificlass(cls, ontology));
             //System.out.println("\tDataproperties:");
             ontoloyclassess.put("objectproperties",getobjectpropertydetailsforspecifclass(cls,ontology));
-            ontoloyclassess.put("datapropertyrestrictions", getclassaxioms(cls, ontology));
+            ontoloyclassess.put("datapropertyrestrictions", getdatapropertyclassaxioms(cls, ontology));
+            getobjectpropertyclassaxioms(cls, ontology);
             classarray.add(ontoloyclassess);
         }
         //System.out.println(classarray);
         return classarray;
     }
-    private static JSONObject getclassaxioms(OWLClass cls,OWLOntology ontology){
+    private static JSONObject getdatapropertyclassaxioms(OWLClass cls,OWLOntology ontology){
         Set<OWLClassAxiom> tempAx=ontology.getAxioms(cls);
         JSONObject datapropertyrestrictions = new JSONObject();
         JSONArray data_has_value = new JSONArray();
@@ -347,6 +348,29 @@ public class OntologyClass {
             }
         }
         return facets;
+    }
+    private static void getobjectpropertyclassaxioms(OWLClass cls,OWLOntology ontology) {
+        Set<OWLClassAxiom> tempAx = ontology.getAxioms(cls);
+        JSONObject objectropertyrestrictions = new JSONObject();
+        JSONArray object_has_value = new JSONArray();
+        JSONArray object_max_cardinality = new JSONArray();
+        JSONArray object_all_values_from = new JSONArray();
+        JSONArray object_exact_cardinality = new JSONArray();
+        JSONArray object_min_cardinality = new JSONArray();
+        JSONArray object_some_values_from = new JSONArray();
+
+        for (OWLClassAxiom ax : tempAx) {
+            for (OWLClassExpression nce : ax.getNestedClassExpressions()) {
+                ObjectRestrictionVisitor objectrestrictionVisitor = new ObjectRestrictionVisitor(Collections.singleton(ontology));
+                nce.accept(objectrestrictionVisitor);
+                for(OWLObjectHasValue dmc:objectrestrictionVisitor.getHasValueProperties()){
+                    System.out.println(dmc.toString());
+                }
+                for(OWLObjectExactCardinality dmc: objectrestrictionVisitor.getExactCardinalityProperties()){
+                    System.out.println(dmc.toString());
+                }
+            }
+        }
     }
 
     public JSONArray getClassArray(){
