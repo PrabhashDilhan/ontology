@@ -68,6 +68,20 @@ public class OntologyClass {
         }
         return ff;
     }
+    private static Set<OWLObjectProperty>  getObjectPropertyRange(OWLOntology ontology, OWLClass dd){
+        //System.out.println(" \tData Property Domain");
+        Set<OWLObjectProperty> ff = new HashSet<OWLObjectProperty>();
+        for (OWLObjectPropertyRangeAxiom dp : ontology.getAxioms(AxiomType.OBJECT_PROPERTY_RANGE)) {
+            if (dp.getRange().equals(dd)){
+                for(OWLObjectProperty odp : dp.getObjectPropertiesInSignature()){
+                    //System.out.println("\t\t +: " + odp.getIRI().getShortForm());
+                    ff.add(odp);
+                }
+                //System.out.println("\t\t +:" + dp.getProperty());
+            }
+        }
+        return ff;
+    }
     private static JSONArray getobjectpropertydetailsforspecifclass(OWLClass cls, OWLOntology ontology){
         Set<OWLObjectProperty> dd = getObjectPropertyDomain(ontology,cls);
         JSONArray objectpropertyarray = new JSONArray();
@@ -90,7 +104,7 @@ public class OntologyClass {
                                 fdpString.indexOf("#") + 1,
                                 fdpString.lastIndexOf(">"));
                     }
-                    if (fdpString.equals(dpraString)) {
+                    if (fdpString.equals(dp.getIRI().getShortForm())) {
                         objectproperty.put("isfunctional", true);
                     }
                     //System.out.println(fdp.getAxiomType().compareTo(AxiomType.FUNCTIONAL_DATA_PROPERTY));
@@ -111,6 +125,42 @@ public class OntologyClass {
             }
             objectpropertyarray.add(objectproperty);
             //for(OWLDataMinCardinality odpmc:ontology.)
+        }
+        return objectpropertyarray;
+    }
+    private static JSONArray getobjectpropertyrangedetailsforspecifclass(OWLClass cls, OWLOntology ontology) {
+        Set<OWLObjectProperty> dd = getObjectPropertyRange(ontology, cls);
+        JSONArray objectpropertyarray = new JSONArray();
+
+        for (OWLObjectProperty dp : dd) {
+            JSONObject objectproperty = new JSONObject();
+            objectproperty.put("objectpropertyname", dp.getIRI().getShortForm());
+            for (OWLFunctionalObjectPropertyAxiom fdp : ontology.getFunctionalObjectPropertyAxioms(dp)) {
+                String fdpString = fdp.toString();
+                if (fdpString.contains("#")) {
+                    fdpString = fdpString.substring(
+                            fdpString.indexOf("#") + 1,
+                            fdpString.lastIndexOf(">"));
+                }
+                if (fdpString.equals(dp.getIRI().getShortForm())) {
+                    objectproperty.put("isfunctional", true);
+                }
+                //System.out.println(fdp.getAxiomType().compareTo(AxiomType.FUNCTIONAL_DATA_PROPERTY));
+            }
+            for(OWLInverseObjectPropertiesAxiom iop : ontology.getInverseObjectPropertyAxioms(dp)){
+                String iopString = iop.toString();
+                if (iopString.contains("#")) {
+                    iopString = iopString.substring(
+                            iopString.indexOf("#",iopString.indexOf("#")+1) + 1,
+                            iopString.lastIndexOf(">"));
+                }
+                objectproperty.put("inverseobjectproperty", iopString);
+
+                if(iop.isOfType(AxiomType.INVERSE_FUNCTIONAL_OBJECT_PROPERTY)){
+                    objectproperty.put("inverseobjectpropertyisfunctional", true);
+                }
+            }
+            objectpropertyarray.add(objectproperty);
         }
         return objectpropertyarray;
     }
@@ -167,6 +217,7 @@ public class OntologyClass {
             ontoloyclassess.put("dataproperties", getdataproprtydetailsforspecificlass(cls, ontology));
             //System.out.println("\tDataproperties:");
             ontoloyclassess.put("objectproperties",getobjectpropertydetailsforspecifclass(cls,ontology));
+            ontoloyclassess.put("objectpropertyrange",getobjectpropertyrangedetailsforspecifclass(cls,ontology));
             ontoloyclassess.put("datapropertyrestrictions", getdatapropertyclassaxioms(cls, ontology));
             getobjectpropertyclassaxioms(cls, ontology);
             classarray.add(ontoloyclassess);
@@ -364,10 +415,11 @@ public class OntologyClass {
                 ObjectRestrictionVisitor objectrestrictionVisitor = new ObjectRestrictionVisitor(Collections.singleton(ontology));
                 nce.accept(objectrestrictionVisitor);
                 for(OWLObjectHasValue dmc:objectrestrictionVisitor.getHasValueProperties()){
-                    System.out.println(dmc.toString());
+                   // System.out.println(dmc.toString());
+                    ///dmc.getFiller().
                 }
                 for(OWLObjectExactCardinality dmc: objectrestrictionVisitor.getExactCardinalityProperties()){
-                    System.out.println(dmc.toString());
+                    //System.out.println(dmc.toString());
                 }
             }
         }

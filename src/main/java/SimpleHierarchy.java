@@ -38,16 +38,17 @@
  */
 
 import java.io.PrintStream;
+import java.util.Iterator;
 
 import org.semanticweb.HermiT.Reasoner;
 import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLException;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
+import org.semanticweb.owlapi.reasoner.impl.OWLClassNode;
 
 
 /** <p>
@@ -64,12 +65,14 @@ public class SimpleHierarchy{
     private final OWLReasonerFactory reasonerFactory;
     private final OWLOntology ontology;
     private final PrintStream out;
+    Tree tree;
 
     private SimpleHierarchy(OWLReasonerFactory reasonerFactory,
                                    OWLOntology _ontology) {
         this.reasonerFactory = reasonerFactory;
         ontology = _ontology;
         out = System.out;
+        tree = new Tree();
     }
 
     /** Print the class hierarchy for the given ontology from this class down,
@@ -92,7 +95,7 @@ public class SimpleHierarchy{
          * Use a visitor to extract label annotations
          */
 
-            return clazz.getIRI().toString();
+            return clazz.getIRI().getShortForm();
 
     }
 
@@ -109,7 +112,18 @@ public class SimpleHierarchy{
             for (int i = 0; i < level * INDENT; i++) {
                 out.print(" ");
             }
-            out.println(labelFor(clazz));
+            if(clazz.isOWLThing()){
+                tree.addNode(clazz.getIRI().getShortForm());
+            }
+            else{
+                for (OWLClass parent : reasoner.getSuperClasses(clazz,true).getFlattened()){
+                    if(!parent.equals(null)) {
+                        if (!parent.equals(clazz)) {
+                            tree.addNode(clazz.getIRI().getShortForm(), parent.getIRI().getShortForm());
+                        }
+                    }
+                }
+            }
             /* Find the children and recurse */
             for (OWLClass child : reasoner.getSubClasses(clazz, true).getFlattened()) {
                 if (!child.equals(clazz)) {
@@ -117,6 +131,10 @@ public class SimpleHierarchy{
                 }
             }
         }
+    }
+
+    public Tree getOntologyTree(){
+        return tree;
     }
 
     @SuppressWarnings("javadoc")
@@ -145,5 +163,21 @@ public class SimpleHierarchy{
         System.out.println("Class       : " + clazz);
         // Print the hierarchy below thing
         simpleHi.printHierarchy(clazz);
+        Tree tree = simpleHi.getOntologyTree();
+        tree.display("Thing");
+        System.out.println("n***** BREADTH-FIRST ITERATION *****");
+
+        BreadthFirstTreeIterator breadthIterator = tree.bfti("Thing", TraversalStrategy.BREADTH_FIRST);
+
+        while (breadthIterator.hasNext()) {
+            Node node = breadthIterator.next();
+            System.out.println(node.getIdentifier());
+        }
+
+        System.out.println("############## lief nodes ########");
+        LevelNodes ln = new LevelNodes(breadthIterator.getLevelsNodes());
+
+        System.out.println(ln.getDepthOfTheTree());
+        System.out.println(ln.getLiefNodes(7));
     }
 }
