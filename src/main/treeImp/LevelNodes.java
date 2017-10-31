@@ -1,21 +1,35 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 /**
  * Created by Prabhash Dilhan on 10/29/2017.
  */
 public class LevelNodes {
-    private HashMap<Integer, ArrayList<String>> levels;
+    private ArrayList<String> list;
 
-    public LevelNodes(HashMap<Integer, ArrayList<String>> levels){
-        this.levels = levels;
-    }
-    public int getDepthOfTheTree(){
-        return levels.size() -1;
-    }
+    public LevelNodes(HashMap<String, Node> tree, String identifier){
+        list = new ArrayList<String>();
 
-    public ArrayList<String> getLiefNodes(int depth){
-        return levels.get(depth);
+        if (tree.containsKey(identifier)) {
+            this.buildList(tree, identifier);
+        }
+    }
+    private void buildList(HashMap<String, Node> tree, String identifier) {
+        ArrayList<String> children = tree.get(identifier).getChildren();
+        if(!children.isEmpty()) {
+            for (String child : children) {
+
+                // Recursive call
+                this.buildList(tree, child);
+            }
+        }
+        else {
+            list.add(tree.get(identifier).getIdentifier());
+        }
+    }
+    public ArrayList<String> getLeafNodes(){
+        return list;
     }
 }

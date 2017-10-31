@@ -22,56 +22,30 @@ public class StringQueryBuilder {
         //queryBuildingMethod();
     }
     public  String queryBuildingMethod(JSONObject jsonLineItem){
-        String createclasstablequery=null;
-        ArrayList<String> gg = new ArrayList<String>();
-        dataspropertytables =gg;
-       /* for (Object obj:array) {
+        System.out.println(array);
+        String createclasstablequery="";
+        dataspropertytables = new ArrayList<String>();
+        earlyRestrictedHasValueProperties = new HashSet<String>();
+        earlyRestrictedMinCardinalityProperties = new HashSet<String>();
+        earlyRestrictedMaxCardinalityProperties = new HashSet<String>();
+        earlyRestrictedExactCardinalityProperties = new HashSet<String>();
+        JSONArray properyarray = (JSONArray) jsonLineItem.get("dataproperties");
 
-            JSONObject jj = (JSONObject) obj;
-            if (jj.get("classname").equals("MeatyPizza")) {
-                jsonLineItem = jj;
-            }
-        }*/
-        //for (Object obj:array) {
+        createclasstablequery = createclasstablequery + setDataHasValueRestriction((JSONObject) jsonLineItem.get("datapropertyrestrictions"));
+        createclasstablequery = createclasstablequery +setMaxCardinalityRestriction((JSONObject) jsonLineItem.get("datapropertyrestrictions"), (String) jsonLineItem.get("classname"));
+        setMinCardinalityRestriction((JSONObject) jsonLineItem.get("datapropertyrestrictions"),(String) jsonLineItem.get("classname"));
+        createclasstablequery = createclasstablequery + setExactCardinalityRestriction((JSONObject) jsonLineItem.get("datapropertyrestrictions"), (String) jsonLineItem.get("classname"));
+        createclasstablequery = createclasstablequery + createTableForClassProperties(properyarray,jsonLineItem);
+        createclasstablequery = createclasstablequery +createColumnFromSuperclassDataProperties(jsonLineItem,(String) jsonLineItem.get("classname"));
 
-            //JSONObject jsonLineItem = (JSONObject) obj;
-                createclasstablequery = "CREATE TABLE " + jsonLineItem.get("classname") + " (" +
-                        "ID INT AUTO_INCREMENT,"+
-                        "instance_name VARCHAR(100),";
-                String createdatapropertytablequery = "";
-                JSONArray properyarray = (JSONArray) jsonLineItem.get("dataproperties");
-                if (!properyarray.isEmpty()) {
-                    for (Object propobj : properyarray) {
-                        //we think own data property cannot restrict on their own class
-                        JSONObject propertyobj = (JSONObject) propobj;
-                        if (propertyobj.containsKey("isfunctional")) {
-                            createclasstablequery = createclasstablequery + " " +
-                                    propertyobj.get("datapropertyname") + " " +
-                                    getDataType((String) propertyobj.get("datatype")) + ",";
-                        } else {
-                            createdatapropertytablequery = "CREATE TABLE " + propertyobj.get("datapropertyname") + " (" +
-                                    jsonLineItem.get("classname") + "_ID INT NOT NULL," +
-                                    "propertyvalue " + getDataType((String) propertyobj.get("datatype")) + "," +
-                                    "FOREIGN KEY (" + jsonLineItem.get("classname") + "_ID) REFERENCES " + jsonLineItem.get("classname") + "(ID)," +
-                                    "PRIMARY KEY (" + jsonLineItem.get("classname") + "_ID,propertyvalue)" +
-                                    ");";
-                            dataspropertytables.add(createdatapropertytablequery);
-                        }
-                    }
-                }
-                setDataHasValueRestriction((JSONObject) jsonLineItem.get("datapropertyrestrictions"), createclasstablequery);
-                setMaxCardinalityRestriction((JSONObject) jsonLineItem.get("datapropertyrestrictions"), createclasstablequery, (String) jsonLineItem.get("classname"));
-                setMinCardinalityRestriction((JSONObject) jsonLineItem.get("datapropertyrestrictions"), createclasstablequery, (String) jsonLineItem.get("classname"));
-                setExactCardinalityRestriction((JSONObject) jsonLineItem.get("datapropertyrestrictions"), createclasstablequery, (String) jsonLineItem.get("classname"));
-                createColumnFromSuperclassDataProperties(jsonLineItem,(String) jsonLineItem.get("classname"), createclasstablequery);
-
-                createclasstablequery = createclasstablequery +
-                        "PRIMARY KEY (ID)" +
-                        ");";
-                System.out.println(createclasstablequery);
-                System.out.println(dataspropertytables);
-       // }
-            return createclasstablequery;
+        String finaltablequery = "CREATE TABLE " + jsonLineItem.get("classname") + " (" +
+                "ID INT AUTO_INCREMENT,"+
+                "instance_name VARCHAR(100),"+createclasstablequery +
+                "PRIMARY KEY (ID)" +
+                ");";
+        System.out.println(finaltablequery);
+        System.out.println(dataspropertytables);
+        return finaltablequery;
     }
     private static String getDataType(String owldatatype) {
         if (owldatatype.equals("string")) {
@@ -86,7 +60,34 @@ public class StringQueryBuilder {
         return null;
 
     }
-    private static void createColumnFromSuperclassDataProperties(JSONObject kk,String originalaclassname,String classtablequery){
+    private static String createTableForClassProperties(JSONArray properyarray,JSONObject jsonLineItem ){
+        String createdatapropertytablequery;
+        String createclasstablequery = "";
+        if (!properyarray.isEmpty()) {
+            for (Object propobj : properyarray) {
+                //we think own data property cannot restrict on their own class
+                JSONObject propertyobj = (JSONObject) propobj;
+                if(!isEarlyRestrictedProperty((String) propertyobj.get("datapropertyname"))) {
+                    if (propertyobj.containsKey("isfunctional")) {
+                        createclasstablequery = createclasstablequery + " " +
+                                propertyobj.get("datapropertyname") + " " +
+                                getDataType((String) propertyobj.get("datatype")) + ",";
+                    } else {
+                        createdatapropertytablequery = "CREATE TABLE " + propertyobj.get("datapropertyname") + " (" +
+                                jsonLineItem.get("classname") + "_ID INT NOT NULL," +
+                                "propertyvalue " + getDataType((String) propertyobj.get("datatype")) + "," +
+                                "FOREIGN KEY (" + jsonLineItem.get("classname") + "_ID) REFERENCES " + jsonLineItem.get("classname") + "(ID)," +
+                                "PRIMARY KEY (" + jsonLineItem.get("classname") + "_ID,propertyvalue)" +
+                                ");";
+                        dataspropertytables.add(createdatapropertytablequery);
+                    }
+                }
+            }
+        }
+        return createclasstablequery;
+    }
+    private static String createColumnFromSuperclassDataProperties(JSONObject kk,String originalaclassname){
+        String classtablequery = "";
           for (Object obj:array) {
               JSONObject jsonLineItem = (JSONObject) obj;
               JSONArray superclasses = (JSONArray) kk.get("supperclasses");
@@ -98,16 +99,8 @@ public class StringQueryBuilder {
                           if (klhv != null) {
                               for (Object objk : klhv) {
                                   JSONObject hasdatavalueobject = (JSONObject) objk;
-                                  if(!earlyRestrictedHasValueProperties.isEmpty()) {
-                                      for (String restrictedpropertyname : earlyRestrictedHasValueProperties) {
-                                          System.out.println(restrictedpropertyname);
-                                          if (!restrictedpropertyname.equals(hasdatavalueobject.get("propertyname"))) {
-                                              setDataHasValueRestriction((JSONObject) jsonLineItem.get("datapropertyrestrictions"), classtablequery);
-                                          }
-                                      }
-                                  }else {
-                                      setDataHasValueRestriction((JSONObject) jsonLineItem.get("datapropertyrestrictions"), classtablequery);
-
+                                  if(!isEarlyRestrictedProperty((String)hasdatavalueobject.get("propertyname"))) {
+                                      classtablequery = classtablequery + " " + setDataHasValueRestriction((JSONObject) jsonLineItem.get("datapropertyrestrictions"));
                                   }
                               }
                           }
@@ -115,71 +108,54 @@ public class StringQueryBuilder {
                           if (klmac != null) {
                               for (Object objk : klmac) {
                                   JSONObject hasdatavalueobject = (JSONObject) objk;
-                                  if(!earlyRestrictedMaxCardinalityProperties.isEmpty()) {
-                                      for (String restrictedpropertyname : earlyRestrictedMaxCardinalityProperties) {
-                                          System.out.println(restrictedpropertyname);
-                                          System.out.println("asdasdas");
-                                          if (!restrictedpropertyname.equals(hasdatavalueobject.get("propertyname").toString())) {
-                                              setMaxCardinalityRestriction((JSONObject) jsonLineItem.get("datapropertyrestrictions"), classtablequery, originalaclassname);
-                                          }
-                                      }
-                                  }else {
-                                      setMaxCardinalityRestriction((JSONObject) jsonLineItem.get("datapropertyrestrictions"), classtablequery, originalaclassname);
+                                  if(!isEarlyRestrictedProperty((String)hasdatavalueobject.get("propertyname"))) {
+                                      classtablequery = classtablequery + " " + setMaxCardinalityRestriction((JSONObject) jsonLineItem.get("datapropertyrestrictions"),originalaclassname);
                                   }
                               }
                           }
-                          JSONArray klmic = (JSONArray) cc.get("data_max_cardinality");
+                          JSONArray klmic = (JSONArray) cc.get("data_min_cardinality");
                           if (klmic != null) {
                               for (Object objk : klmic) {
                                   JSONObject hasdatavalueobject = (JSONObject) objk;
-                                  if(!earlyRestrictedMinCardinalityProperties.isEmpty()) {
-                                      for (String restrictedpropertyname : earlyRestrictedMinCardinalityProperties) {
-                                          System.out.println(restrictedpropertyname);
-                                          if (!restrictedpropertyname.equals(hasdatavalueobject.get("propertyname"))) {
-                                              setMinCardinalityRestriction((JSONObject) jsonLineItem.get("datapropertyrestrictions"), classtablequery, originalaclassname);
-                                          }
-                                      }
-                                  }else {
-                                      setMinCardinalityRestriction((JSONObject) jsonLineItem.get("datapropertyrestrictions"), classtablequery, originalaclassname);
-
+                                  if(!isEarlyRestrictedProperty((String)hasdatavalueobject.get("propertyname"))) {
+                                      setMinCardinalityRestriction((JSONObject) jsonLineItem.get("datapropertyrestrictions"),originalaclassname);
                                   }
                               }
-                              JSONArray klec = (JSONArray) cc.get("data_max_cardinality");
+                              JSONArray klec = (JSONArray) cc.get("data_exact_cardinality");
                               if (klec != null) {
                                   for (Object objk : klec) {
                                       JSONObject hasdatavalueobject = (JSONObject) objk;
-                                      if(!earlyRestrictedExactCardinalityProperties.isEmpty()) {
-                                          for (String restrictedpropertyname : earlyRestrictedExactCardinalityProperties) {
-                                              System.out.println(restrictedpropertyname);
-                                              if (!restrictedpropertyname.equals(hasdatavalueobject.get("propertyname"))) {
-                                                  setExactCardinalityRestriction((JSONObject) jsonLineItem.get("datapropertyrestrictions"), classtablequery, originalaclassname);
-                                              }
-                                          }
-                                      }else {
-                                          setExactCardinalityRestriction((JSONObject) jsonLineItem.get("datapropertyrestrictions"), classtablequery, originalaclassname);
-
+                                      if(!isEarlyRestrictedProperty((String)hasdatavalueobject.get("propertyname"))) {
+                                          classtablequery = classtablequery + " " + setExactCardinalityRestriction((JSONObject) jsonLineItem.get("datapropertyrestrictions"),originalaclassname);
                                       }
                                   }
                               }
                           }
+                          classtablequery = classtablequery + " " + createColumnFromSuperclassDataProperties(jsonLineItem,(String) superclassname);
                       }
                   }
               }
           }
+          return classtablequery;
     }
-    private static void setDataHasValueRestriction(JSONObject restrictionobject,String classtablequery){
+    //there is a problem to handle in this function when same data property have 2 or more
+    //has value restrictions in the same class
+    private static String setDataHasValueRestriction(JSONObject restrictionobject){
+        String classtablequery = "";
         JSONArray kl = (JSONArray)restrictionobject.get("data_has_value");
         if(kl != null ) {
             for(Object obj:kl) {
                 JSONObject hasdatavalueobject = (JSONObject)obj;
                 classtablequery = classtablequery + " " +
                         hasdatavalueobject.get("propertyname") + " " +
-                        "ENUM("+hasdatavalueobject.get("literalvalue")+"),";
+                        "ENUM("+"\'"+hasdatavalueobject.get("literalvalue")+"\'),";
                 earlyRestrictedHasValueProperties.add(hasdatavalueobject.get("propertyname").toString());
             }
         }
+        return classtablequery;
     }
-    private static void setMaxCardinalityRestriction(JSONObject restrictionobject,String classtablequery, String classtablename){
+    private static String setMaxCardinalityRestriction(JSONObject restrictionobject, String classtablename){
+        String classtablequery = "";
         JSONArray kl = (JSONArray)restrictionobject.get("data_max_cardinality");
         String createdatapropertytablequery;
         if(kl != null ) {
@@ -210,8 +186,9 @@ public class StringQueryBuilder {
                 }
             }
         }
+        return classtablequery;
     }
-    private static void setMinCardinalityRestriction(JSONObject restrictionobject,String classtablequery, String classtablename){
+    private static void setMinCardinalityRestriction(JSONObject restrictionobject, String classtablename){
         JSONArray kl = (JSONArray)restrictionobject.get("data_min_cardinality");
         String createdatapropertytablequery;
         if(kl != null ) {
@@ -229,23 +206,78 @@ public class StringQueryBuilder {
             }
         }
     }
-    private static void setExactCardinalityRestriction(JSONObject restrictionobject,String classtablequery, String classtablename){
+    private static String setExactCardinalityRestriction(JSONObject restrictionobject, String classtablename){
+        String classtablequery = "";
         JSONArray kl = (JSONArray)restrictionobject.get("data_exact_cardinality");
         String createdatapropertytablequery;
         if(kl != null ) {
             for(Object obj:kl) {
                 JSONObject exactcardinalityobject = (JSONObject)obj;
+                if(exactcardinalityobject.get("cardinalityvalue").toString()=="1") {
+                    classtablequery = classtablequery + " " +
+                            exactcardinalityobject.get("propertyname") + " " +
+                            getDataType((String) exactcardinalityobject.get("datatype"))+",";
+                    earlyRestrictedExactCardinalityProperties.add(exactcardinalityobject.get("propertyname").toString());
+                }
+                else{
                     createdatapropertytablequery = "CREATE TABLE "+classtablename+"_"+exactcardinalityobject.get("propertyname")+" ("+
                             classtablename+"_ID INT NOT NULL,"+
                             "propertyvalue "+getDataType((String) exactcardinalityobject.get("datatype"))+","+
                             "FOREIGN KEY ("+classtablename+"_ID) REFERENCES "+classtablename+"(ID),"+
                             "PRIMARY KEY ("+classtablename+"_ID,propertyvalue)"+
                             ");";
+
+                    String jj = "CREATE TRIGGER "+classtablename+"_"+exactcardinalityobject.get("propertyname")+"_exact"+" BEFORE INSERT ON "+classtablename+"_"+exactcardinalityobject.get("propertyname")+
+                            " FOR EACH ROW BEGIN IF ((SELECT COUNT(*) FROM "+ classtablename+"_"+exactcardinalityobject.get("propertyname")+" WHERE "+classtablename+"_ID = NEW."+classtablename+"_ID) > "
+                            +exactcardinalityobject.get("cardinalityvalue").toString()+") THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Only three products per user allowed'; END IF"+";" +
+                            ""+" END;";
                     dataspropertytables.add(createdatapropertytablequery);
-                earlyRestrictedExactCardinalityProperties.add(exactcardinalityobject.get("propertyname").toString());
+                    dataspropertytables.add(jj);
+                    earlyRestrictedExactCardinalityProperties.add(exactcardinalityobject.get("propertyname").toString());
+
+                }
 
             }
         }
+        return classtablequery;
+    }
+    private static boolean isEarlyRestrictedProperty(String propertyName){
+        boolean isearlyrestricted = false;
+        if(!earlyRestrictedExactCardinalityProperties.isEmpty()) {
+            for (String restrictedpropertyname : earlyRestrictedExactCardinalityProperties) {
+                System.out.println(restrictedpropertyname);
+                if (!restrictedpropertyname.equals(propertyName)) {
+                    isearlyrestricted = true;
+                }
+            }
+        }else if((!earlyRestrictedMaxCardinalityProperties.isEmpty())) {
+            for (String restrictedpropertyname : earlyRestrictedMaxCardinalityProperties) {
+                System.out.println(restrictedpropertyname);
+                if (!restrictedpropertyname.equals(propertyName)) {
+                    isearlyrestricted = true;
+                }
+            }
+        }
+        else if((!earlyRestrictedMinCardinalityProperties.isEmpty())){
+            for (String restrictedpropertyname : earlyRestrictedMinCardinalityProperties) {
+                System.out.println(restrictedpropertyname);
+                if (!restrictedpropertyname.equals(propertyName)) {
+                    isearlyrestricted = true;
+                }
+            }
+        }
+        else if((!earlyRestrictedHasValueProperties.isEmpty())){
+            for (String restrictedpropertyname : earlyRestrictedHasValueProperties) {
+                System.out.println(restrictedpropertyname);
+                if (!restrictedpropertyname.equals(propertyName)) {
+                    isearlyrestricted = true;
+                }
+            }
+        }
+        else {
+            isearlyrestricted = false;
+        }
+        return isearlyrestricted;
     }
     public static ArrayList<String> getDataspropertytables(){
         return dataspropertytables;

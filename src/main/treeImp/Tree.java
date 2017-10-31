@@ -92,7 +92,7 @@ public class Tree {
                 new BreadthFirstTreeIterator(nodes, identifier) :
                 new DepthFirstTreeIterator(nodes, identifier);
     }
-    public BreadthFirstTreeIterator bfti(String identifier, TraversalStrategy traversalStrategy){
-        return new BreadthFirstTreeIterator(nodes, identifier);
+    public LevelNodes selectLeafNodes(String identifier){
+        return new LevelNodes(nodes, identifier);
     }
 }

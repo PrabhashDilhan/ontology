@@ -166,18 +166,33 @@ public class SimpleHierarchy{
         Tree tree = simpleHi.getOntologyTree();
         tree.display("Thing");
         System.out.println("n***** BREADTH-FIRST ITERATION *****");
+        Tree treee = new Tree();
 
-        BreadthFirstTreeIterator breadthIterator = tree.bfti("Thing", TraversalStrategy.BREADTH_FIRST);
+        /*
+         * The second parameter for the addNode method is the identifier
+         * for the node's parent. In the case of the root node, either
+         * null is provided or no second parameter is provided.
+         */
+        treee.addNode("Harry");
+        treee.addNode("Jane", "Harry");
+        treee.addNode("Bill", "Harry");
+        treee.addNode("Joe", "Jane");
+        treee.addNode("Diane", "Jane");
+        treee.addNode("George", "Diane");
+        treee.addNode("Mary", "Diane");
+        treee.addNode("Jill", "George");
+        treee.addNode("Carol", "Jill");
+        treee.addNode("Grace", "Bill");
+        treee.addNode("Mark", "Jane");
+        treee.addNode("Mark", "Bill");
 
-        while (breadthIterator.hasNext()) {
-            Node node = breadthIterator.next();
-            System.out.println(node.getIdentifier());
-        }
+        treee.display("Harry");
+
+        LevelNodes ln = treee.selectLeafNodes("Harry");
 
         System.out.println("############## lief nodes ########");
-        LevelNodes ln = new LevelNodes(breadthIterator.getLevelsNodes());
+        System.out.println(ln.getLeafNodes());
+        System.out.println(ln.getLeafNodes().size());
 
-        System.out.println(ln.getDepthOfTheTree());
-        System.out.println(ln.getLiefNodes(7));
     }
 }

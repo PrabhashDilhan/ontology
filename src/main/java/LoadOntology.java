@@ -12,7 +12,7 @@ public class LoadOntology {
         // Get hold of an ontology manager
 
             private OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
-            File file = new File("F:\\pizzaowl\\pizza.owl");
+            File file = new File("F:\\pizzaowl\\SLN_Ontology.owl");
 
 
 

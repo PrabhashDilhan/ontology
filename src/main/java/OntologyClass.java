@@ -36,6 +36,8 @@ public class OntologyClass {
                 }
             }
         }
+        //System.out.println(dd.getIRI().getShortForm());
+        //System.out.println("\t\t\t:"+cc);
         return cc;
     }
     private static Set<OWLObjectProperty>  getObjectPropertyDomain(OWLOntology ontology, OWLClass dd){
@@ -204,25 +206,27 @@ public class OntologyClass {
 
 
         for (OWLClass cls : classes) {
-            JSONObject ontoloyclassess = new JSONObject();
-            JSONArray superclsarry = new JSONArray();
-            ontoloyclassess.put("classname", cls.getIRI().getShortForm());
-            Set<OWLClass> supperclasses = getSupperClasses(ontology, cls);
-            int count = 0;
-            for (OWLClass suppercls : supperclasses) {
-                //System.out.println("\t\t"+suppercls.getIRI().getShortForm());
-                superclsarry.add(suppercls.getIRI().getShortForm());
+            if (cls.getIRI().getShortForm().equals("Crop")) {
+                JSONObject ontoloyclassess = new JSONObject();
+                JSONArray superclsarry = new JSONArray();
+                ontoloyclassess.put("classname", cls.getIRI().getShortForm());
+                Set<OWLClass> supperclasses = getSupperClasses(ontology, cls);
+                int count = 0;
+                for (OWLClass suppercls : supperclasses) {
+                    //System.out.println("\t\t"+suppercls.getIRI().getShortForm());
+                    superclsarry.add(suppercls.getIRI().getShortForm());
+                }
+                ontoloyclassess.put("supperclasses", superclsarry);
+                ontoloyclassess.put("dataproperties", getdataproprtydetailsforspecificlass(cls, ontology));
+                //System.out.println("\tDataproperties:");
+                ontoloyclassess.put("objectproperties", getobjectpropertydetailsforspecifclass(cls, ontology));
+                ontoloyclassess.put("objectpropertyrange", getobjectpropertyrangedetailsforspecifclass(cls, ontology));
+                ontoloyclassess.put("datapropertyrestrictions", getdatapropertyclassaxioms(cls, ontology));
+                getobjectpropertyclassaxioms(cls, ontology);
+                classarray.add(ontoloyclassess);
             }
-            ontoloyclassess.put("supperclasses", superclsarry);
-            ontoloyclassess.put("dataproperties", getdataproprtydetailsforspecificlass(cls, ontology));
-            //System.out.println("\tDataproperties:");
-            ontoloyclassess.put("objectproperties",getobjectpropertydetailsforspecifclass(cls,ontology));
-            ontoloyclassess.put("objectpropertyrange",getobjectpropertyrangedetailsforspecifclass(cls,ontology));
-            ontoloyclassess.put("datapropertyrestrictions", getdatapropertyclassaxioms(cls, ontology));
-            getobjectpropertyclassaxioms(cls, ontology);
-            classarray.add(ontoloyclassess);
         }
-        //System.out.println(classarray);
+        System.out.println(classarray);
         return classarray;
     }
     private static JSONObject getdatapropertyclassaxioms(OWLClass cls,OWLOntology ontology){
