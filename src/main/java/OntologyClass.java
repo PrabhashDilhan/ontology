@@ -1,6 +1,10 @@
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.semanticweb.owlapi.model.*;
+import org.semanticweb.owlapi.reasoner.*;
+import org.semanticweb.owlapi.reasoner.structural.StructuralReasoner;
+import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,17 +31,12 @@ public class OntologyClass {
     }
     private static Set<OWLClass>  getSupperClasses(OWLOntology ontology, OWLClass dd){
         //System.out.println("\tSub classes");
+        OWLReasoner reasoner = new StructuralReasonerFactory().createReasoner(ontology);
         Set<OWLClass> cc = new HashSet<OWLClass>();
-        for(OWLSubClassOfAxiom subclass:ontology.getAxioms(AxiomType.SUBCLASS_OF)){
-            if(subclass.getSubClass().equals(dd)){
-                for(OWLClass owlcLass:subclass.getClassesInSignature()) {
-                    //System.out.println("\t\t +:"+owlcLass.getIRI().getShortForm());
-                    cc.add(owlcLass);
-                }
-            }
+        for(OWLClass subclass:reasoner.getSuperClasses(dd,true).getFlattened()){
+            System.out.println("\t\t +:" + subclass.getIRI().getShortForm());
+            cc.add(subclass);
         }
-        //System.out.println(dd.getIRI().getShortForm());
-        //System.out.println("\t\t\t:"+cc);
         return cc;
     }
     private static Set<OWLObjectProperty>  getObjectPropertyDomain(OWLOntology ontology, OWLClass dd){
@@ -206,7 +205,7 @@ public class OntologyClass {
 
 
         for (OWLClass cls : classes) {
-            if (cls.getIRI().getShortForm().equals("Crop")) {
+            if (cls.getIRI().getShortForm().equals("MeatyPizza") || cls.getIRI().getShortForm().equals("Pizza")) {
                 JSONObject ontoloyclassess = new JSONObject();
                 JSONArray superclsarry = new JSONArray();
                 ontoloyclassess.put("classname", cls.getIRI().getShortForm());
@@ -226,7 +225,7 @@ public class OntologyClass {
                 classarray.add(ontoloyclassess);
             }
         }
-        System.out.println(classarray);
+        //System.out.println(classarray);
         return classarray;
     }
     private static JSONObject getdatapropertyclassaxioms(OWLClass cls,OWLOntology ontology){

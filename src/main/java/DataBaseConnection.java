@@ -26,6 +26,7 @@ public class DataBaseConnection {
             Class.forName("com.mysql.jdbc.Driver");
 
             //STEP 3: Open a connection
+            System.out.println(sql);
             System.out.println("Connecting to database...");
             conn = DriverManager.getConnection(DB_URL,USER,PASS);
 

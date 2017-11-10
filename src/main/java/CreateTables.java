@@ -14,6 +14,7 @@ public class CreateTables {
             JSONObject jj = (JSONObject) obj;
             String sql = qb.queryBuildingMethod(jj);
             DataBaseConnection dc = new DataBaseConnection();
+            System.out.println(jj.get("classname")+"::::::table now we re going to create");
             dc.setquerystring(sql);
             dc.dbconnect();
             for (String ff : qb.getDataspropertytables()) {

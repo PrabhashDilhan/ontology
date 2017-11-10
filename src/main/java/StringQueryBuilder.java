@@ -43,8 +43,8 @@ public class StringQueryBuilder {
                 "instance_name VARCHAR(100),"+createclasstablequery +
                 "PRIMARY KEY (ID)" +
                 ");";
-        System.out.println(finaltablequery);
-        System.out.println(dataspropertytables);
+        //System.out.println(finaltablequery);
+        //System.out.println(dataspropertytables);
         return finaltablequery;
     }
     private static String getDataType(String owldatatype) {
@@ -73,7 +73,7 @@ public class StringQueryBuilder {
                                 propertyobj.get("datapropertyname") + " " +
                                 getDataType((String) propertyobj.get("datatype")) + ",";
                     } else {
-                        createdatapropertytablequery = "CREATE TABLE " + propertyobj.get("datapropertyname") + " (" +
+                        createdatapropertytablequery = "CREATE TABLE " +jsonLineItem.get("classname")+"_"+propertyobj.get("datapropertyname") + " (" +
                                 jsonLineItem.get("classname") + "_ID INT NOT NULL," +
                                 "propertyvalue " + getDataType((String) propertyobj.get("datatype")) + "," +
                                 "FOREIGN KEY (" + jsonLineItem.get("classname") + "_ID) REFERENCES " + jsonLineItem.get("classname") + "(ID)," +
@@ -93,7 +93,7 @@ public class StringQueryBuilder {
               JSONArray superclasses = (JSONArray) kk.get("supperclasses");
               if (!superclasses.isEmpty()) {
                   for (Object superclassname : superclasses) {
-                      if (superclassname.toString().equals(jsonLineItem.get("classname")) && (!superclassname.toString().equals(originalaclassname))) {
+                      if (superclassname.toString().equals(jsonLineItem.get("classname"))) {
                           JSONObject cc =(JSONObject) jsonLineItem.get("datapropertyrestrictions");
                           JSONArray klhv = (JSONArray) cc.get("data_has_value");
                           if (klhv != null) {
@@ -246,14 +246,14 @@ public class StringQueryBuilder {
         if(!earlyRestrictedExactCardinalityProperties.isEmpty()) {
             for (String restrictedpropertyname : earlyRestrictedExactCardinalityProperties) {
                 System.out.println(restrictedpropertyname);
-                if (!restrictedpropertyname.equals(propertyName)) {
+                if (restrictedpropertyname.equals(propertyName)) {
                     isearlyrestricted = true;
                 }
             }
         }else if((!earlyRestrictedMaxCardinalityProperties.isEmpty())) {
             for (String restrictedpropertyname : earlyRestrictedMaxCardinalityProperties) {
                 System.out.println(restrictedpropertyname);
-                if (!restrictedpropertyname.equals(propertyName)) {
+                if (restrictedpropertyname.equals(propertyName)) {
                     isearlyrestricted = true;
                 }
             }
@@ -261,7 +261,7 @@ public class StringQueryBuilder {
         else if((!earlyRestrictedMinCardinalityProperties.isEmpty())){
             for (String restrictedpropertyname : earlyRestrictedMinCardinalityProperties) {
                 System.out.println(restrictedpropertyname);
-                if (!restrictedpropertyname.equals(propertyName)) {
+                if (restrictedpropertyname.equals(propertyName)) {
                     isearlyrestricted = true;
                 }
             }
@@ -269,7 +269,7 @@ public class StringQueryBuilder {
         else if((!earlyRestrictedHasValueProperties.isEmpty())){
             for (String restrictedpropertyname : earlyRestrictedHasValueProperties) {
                 System.out.println(restrictedpropertyname);
-                if (!restrictedpropertyname.equals(propertyName)) {
+                if (restrictedpropertyname.equals(propertyName)) {
                     isearlyrestricted = true;
                 }
             }
