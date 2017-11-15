@@ -1,5 +1,6 @@
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.semanticweb.owlapi.model.OWLException;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -21,7 +22,8 @@ public class StringQueryBuilder {
 
         //queryBuildingMethod();
     }
-    public  String queryBuildingMethod(JSONObject jsonLineItem){
+    public  String queryBuildingMethod(JSONObject jsonLineItem)throws OWLException, InstantiationException,
+            IllegalAccessException, ClassNotFoundException{
         System.out.println(array);
         String createclasstablequery="";
         dataspropertytables = new ArrayList<String>();
@@ -38,13 +40,17 @@ public class StringQueryBuilder {
         createclasstablequery = createclasstablequery + createTableForClassProperties(properyarray,jsonLineItem);
         createclasstablequery = createclasstablequery +createColumnFromSuperclassDataProperties(jsonLineItem,(String) jsonLineItem.get("classname"));
 
+        OPQueryBuilder op = new OPQueryBuilder();
+
         String finaltablequery = "CREATE TABLE " + jsonLineItem.get("classname") + " (" +
                 "ID INT AUTO_INCREMENT,"+
-                "instance_name VARCHAR(100),"+createclasstablequery +
+                "Referential_id VARCHAR(50) DEFAULT '"+jsonLineItem.get("classname")+"',"+
+                "Instance_name VARCHAR(100),"+createclasstablequery +
+                op.queryBuilderForClassProperties(jsonLineItem,dataspropertytables)+
                 "PRIMARY KEY (ID)" +
                 ");";
-        //System.out.println(finaltablequery);
-        //System.out.println(dataspropertytables);
+        System.out.println(finaltablequery);
+        System.out.println(dataspropertytables);
         return finaltablequery;
     }
     private static String getDataType(String owldatatype) {

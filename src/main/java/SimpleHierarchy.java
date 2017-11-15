@@ -67,7 +67,7 @@ public class SimpleHierarchy{
     private final PrintStream out;
     Tree tree;
 
-    private SimpleHierarchy(OWLReasonerFactory reasonerFactory,
+    public SimpleHierarchy(OWLReasonerFactory reasonerFactory,
                                    OWLOntology _ontology) {
         this.reasonerFactory = reasonerFactory;
         ontology = _ontology;
@@ -78,7 +78,7 @@ public class SimpleHierarchy{
     /** Print the class hierarchy for the given ontology from this class down,
      * assuming this class is at the given level. Makes no attempt to deal
      * sensibly with multiple inheritance. */
-    private void printHierarchy(OWLClass clazz) throws OWLException {
+    public void printHierarchy(OWLClass clazz) throws OWLException {
         OWLReasoner reasoner = reasonerFactory.createNonBufferingReasoner(ontology);
         printHierarchy(reasoner, clazz, 0);
         /* Now print out any unsatisfiable classes */
@@ -102,7 +102,7 @@ public class SimpleHierarchy{
     /** Print the class hierarchy from this class down, assuming this class is at
      * the given level. Makes no attempt to deal sensibly with multiple
      * inheritance. */
-    private void printHierarchy(OWLReasoner reasoner, OWLClass clazz, int level)
+    public void printHierarchy(OWLReasoner reasoner, OWLClass clazz, int level)
             throws OWLException {
         /*
          * Only print satisfiable classes -- otherwise we end up with bottom
@@ -165,15 +165,13 @@ public class SimpleHierarchy{
         simpleHi.printHierarchy(clazz);
         Tree tree = simpleHi.getOntologyTree();
         tree.display("Thing");
-        System.out.println("n***** BREADTH-FIRST ITERATION *****");
-        Tree treee = new Tree();
 
         /*
          * The second parameter for the addNode method is the identifier
          * for the node's parent. In the case of the root node, either
          * null is provided or no second parameter is provided.
          */
-        treee.addNode("Harry");
+        /*treee.addNode("Harry");
         treee.addNode("Jane", "Harry");
         treee.addNode("Bill", "Harry");
         treee.addNode("Joe", "Jane");
@@ -184,15 +182,25 @@ public class SimpleHierarchy{
         treee.addNode("Carol", "Jill");
         treee.addNode("Grace", "Bill");
         treee.addNode("Mark", "Jane");
-        treee.addNode("Mark", "Bill");
+        treee.addNode("Mark", "Bill");*/
 
-        treee.display("Harry");
+        //tree.display("Harry");
 
-        LevelNodes ln = treee.selectLeafNodes("Harry");
+        //LevelNodes ln = treee.selectLeafNodes("Harry");
 
-        System.out.println("############## lief nodes ########");
-        System.out.println(ln.getLeafNodes());
-        System.out.println(ln.getLeafNodes().size());
+        //System.out.println("############## lief nodes ########");
+        //System.out.println(ln.getLeafNodes());
+        //System.out.println(ln.getLeafNodes().size());
 
+    }
+    public static Tree getTree()throws OWLException, InstantiationException,
+            IllegalAccessException, ClassNotFoundException{
+        LoadOntology loadedOntology = new LoadOntology();
+        OWLOntology ontology = loadedOntology.getOwlOntologyManager();
+        SimpleHierarchy simpleHi = new SimpleHierarchy(
+                new Reasoner.ReasonerFactory(), ontology);
+        //Tree tree = simpleHi.getOntologyTree();
+
+        return simpleHi.getOntologyTree();
     }
 }

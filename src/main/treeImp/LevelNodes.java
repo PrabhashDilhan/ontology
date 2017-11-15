@@ -19,6 +19,7 @@ public class LevelNodes {
     private void buildList(HashMap<String, Node> tree, String identifier) {
         ArrayList<String> children = tree.get(identifier).getChildren();
         if(!children.isEmpty()) {
+            list.add(tree.get(identifier).getIdentifier());
             for (String child : children) {
 
                 // Recursive call

@@ -2,7 +2,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.semanticweb.owlapi.model.*;
 import org.semanticweb.owlapi.reasoner.*;
-import org.semanticweb.owlapi.reasoner.structural.StructuralReasoner;
 import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
 
 import java.util.Collections;
@@ -34,7 +33,7 @@ public class OntologyClass {
         OWLReasoner reasoner = new StructuralReasonerFactory().createReasoner(ontology);
         Set<OWLClass> cc = new HashSet<OWLClass>();
         for(OWLClass subclass:reasoner.getSuperClasses(dd,true).getFlattened()){
-            System.out.println("\t\t +:" + subclass.getIRI().getShortForm());
+            //System.out.println("\t\t +:" + subclass.getIRI().getShortForm());
             cc.add(subclass);
         }
         return cc;
@@ -205,7 +204,7 @@ public class OntologyClass {
 
 
         for (OWLClass cls : classes) {
-            if (cls.getIRI().getShortForm().equals("MeatyPizza") || cls.getIRI().getShortForm().equals("Pizza")) {
+            if (cls.getIRI().getShortForm().equals("Pizza")) {
                 JSONObject ontoloyclassess = new JSONObject();
                 JSONArray superclsarry = new JSONArray();
                 ontoloyclassess.put("classname", cls.getIRI().getShortForm());
@@ -225,7 +224,9 @@ public class OntologyClass {
                 classarray.add(ontoloyclassess);
             }
         }
-        //System.out.println(classarray);
+        for(Object ff:classarray){
+            System.out.println(ff);
+        }
         return classarray;
     }
     private static JSONObject getdatapropertyclassaxioms(OWLClass cls,OWLOntology ontology){
