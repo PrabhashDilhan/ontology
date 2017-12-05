@@ -6,7 +6,7 @@ import java.sql.*;
 public class DataBaseConnection {
     // JDBC driver name and database URL
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-    static final String DB_URL = "jdbc:mysql://localhost/ontology";
+    static final String DB_URL = "jdbc:mysql://localhost/slnontology";
 
     //  Database credentials
     static final String USER = "root";

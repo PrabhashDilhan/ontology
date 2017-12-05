@@ -18,11 +18,15 @@ public class StringQueryBuilder {
     static Set<String> earlyRestrictedMinCardinalityProperties = new HashSet<String>();
     static Set<String> earlyRestrictedMaxCardinalityProperties = new HashSet<String>();
     static Set<String> earlyRestrictedExactCardinalityProperties = new HashSet<String>();
-    public static void main(String[] args){
+    public static void main(String[] args)throws OWLException, InstantiationException,
+            IllegalAccessException, ClassNotFoundException{
+        for (Object line:array){
+            JSONObject kk = (JSONObject)line;
+            System.out.println(queryBuildingMethod(kk));
+        }
 
-        //queryBuildingMethod();
     }
-    public  String queryBuildingMethod(JSONObject jsonLineItem)throws OWLException, InstantiationException,
+    public  static String queryBuildingMethod(JSONObject jsonLineItem)throws OWLException, InstantiationException,
             IllegalAccessException, ClassNotFoundException{
         System.out.println(array);
         String createclasstablequery="";
@@ -46,11 +50,16 @@ public class StringQueryBuilder {
                 "ID INT AUTO_INCREMENT,"+
                 "Referential_id VARCHAR(50) DEFAULT '"+jsonLineItem.get("classname")+"',"+
                 "Instance_name VARCHAR(100),"+createclasstablequery +
-                op.queryBuilderForClassProperties(jsonLineItem,dataspropertytables)+
+                op.queryBuilderForClassProperties(jsonLineItem)+
                 "PRIMARY KEY (ID)" +
                 ");";
-        System.out.println(finaltablequery);
-        System.out.println(dataspropertytables);
+        //System.out.println(finaltablequery);
+        for(String trigger:op.getObjectPropertytriggers()){
+            dataspropertytables.add(trigger);
+        }
+        for (String kk:dataspropertytables){
+            System.out.println(kk);
+        }
         return finaltablequery;
     }
     private static String getDataType(String owldatatype) {

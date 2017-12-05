@@ -3,10 +3,12 @@ import org.json.simple.JSONObject;
 import org.semanticweb.owlapi.model.*;
 import org.semanticweb.owlapi.reasoner.*;
 import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
+import org.semanticweb.owlapi.search.EntitySearcher;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 /**
@@ -204,7 +206,7 @@ public class OntologyClass {
 
 
         for (OWLClass cls : classes) {
-            if (cls.getIRI().getShortForm().equals("Pizza")) {
+            if (cls.getIRI().getShortForm().equals("MeatyPizza")) {
                 JSONObject ontoloyclassess = new JSONObject();
                 JSONArray superclsarry = new JSONArray();
                 ontoloyclassess.put("classname", cls.getIRI().getShortForm());
@@ -223,9 +225,6 @@ public class OntologyClass {
                 getobjectpropertyclassaxioms(cls, ontology);
                 classarray.add(ontoloyclassess);
             }
-        }
-        for(Object ff:classarray){
-            System.out.println(ff);
         }
         return classarray;
     }
@@ -419,13 +418,169 @@ public class OntologyClass {
                 ObjectRestrictionVisitor objectrestrictionVisitor = new ObjectRestrictionVisitor(Collections.singleton(ontology));
                 nce.accept(objectrestrictionVisitor);
                 for(OWLObjectHasValue dmc:objectrestrictionVisitor.getHasValueProperties()){
-                   // System.out.println(dmc.toString());
-                    ///dmc.getFiller().
+                    System.out.println(dmc);
+                    System.out.println(dmc.getFiller().asOWLNamedIndividual().getIRI().getShortForm());
+                    Set<Object> hh = EntitySearcher.getTypes(dmc.getFiller().asOWLNamedIndividual(), ontology).collect(Collectors.toSet());
+                    for (Object gg:hh){
+                        OWLClassExpression kk = (OWLClassExpression)gg;
+                        System.out.println((kk.toString()));
+                    }
+
+                    //dmc.getFiller().
                 }
-                for(OWLObjectExactCardinality dmc: objectrestrictionVisitor.getExactCardinalityProperties()){
-                    //System.out.println(dmc.toString());
+                for(OWLObjectExactCardinality oec: objectrestrictionVisitor.getExactCardinalityProperties()){
+                    String propertyname = oec.getProperty().asOWLObjectProperty().getIRI().getShortForm();
+                    if(!oec.getFiller().isOWLClass()) {
+                        int cardinalityvalue = oec.getCardinality();
+                        JSONArray intersection = new JSONArray();
+                        JSONArray union = new JSONArray();
+                        JSONObject hasdatavalueobj = new JSONObject();
+                        hasdatavalueobj.put("cardinalityvalue",cardinalityvalue);
+                        hasdatavalueobj.put("propertyname",propertyname);
+                        getUnionAndIntersection(oec.getFiller(),ontology, hasdatavalueobj, union,intersection);
+                        hasdatavalueobj.put("union",union);
+                        hasdatavalueobj.put("intersection",intersection);
+                        object_exact_cardinality.add(hasdatavalueobj);
+                    }
+                    else {
+                        int cardinalityvalue = oec.getCardinality();
+                        String fillerclass = oec.getFiller().asOWLClass().getIRI().getShortForm();
+                        JSONObject hasdatavalueobj = new JSONObject();
+                        hasdatavalueobj.put("cardinalityvalue",cardinalityvalue);
+                        hasdatavalueobj.put("propertyname",propertyname);
+                        hasdatavalueobj.put("fillerclass",fillerclass);
+                        object_exact_cardinality.add(hasdatavalueobj);
+                    }
+                    System.out.println(object_exact_cardinality);
+                }
+                for(OWLObjectMinCardinality omic: objectrestrictionVisitor.getMinCardinalityProperties()){
+                    String propertyname = omic.getProperty().asOWLObjectProperty().getIRI().getShortForm();
+                    if(!omic.getFiller().isOWLClass()) {
+                        JSONObject hasdatavalueobj = new JSONObject();
+                        JSONArray intersection = new JSONArray();
+                        int cardinalityvalue = omic.getCardinality();
+                        JSONArray union = new JSONArray();
+                        hasdatavalueobj.put("cardinalityvalue",cardinalityvalue);
+                        hasdatavalueobj.put("propertyname",propertyname);
+                        getUnionAndIntersection(omic.getFiller(),ontology, hasdatavalueobj, union,intersection);
+                        hasdatavalueobj.put("union",union);
+                        hasdatavalueobj.put("intersection",intersection);
+                        object_min_cardinality.add(hasdatavalueobj);
+                    }
+                    else {
+                        String fillerclass = omic.getFiller().asOWLClass().getIRI().getShortForm();
+                        int cardinalityvalue = omic.getCardinality();
+                        JSONObject hasdatavalueobj = new JSONObject();
+                        hasdatavalueobj.put("cardinalityvalue",cardinalityvalue);
+                        hasdatavalueobj.put("propertyname",propertyname);
+                        hasdatavalueobj.put("fillerclass",fillerclass);
+                        object_min_cardinality.add(hasdatavalueobj);
+                    }
+                    System.out.println(object_min_cardinality);
+                }
+                for(OWLObjectMaxCardinality omac: objectrestrictionVisitor.getMaxCardinalityProperties()){
+                    String propertyname = omac.getProperty().asOWLObjectProperty().getIRI().getShortForm();
+                    if(!omac.getFiller().isOWLClass()) {
+                        JSONArray union = new JSONArray();
+                        int cardinalityvalue = omac.getCardinality();
+                        JSONArray intersection = new JSONArray();
+                        JSONObject hasdatavalueobj = new JSONObject();
+                        hasdatavalueobj.put("cardinalityvalue",cardinalityvalue);
+                        hasdatavalueobj.put("propertyname",propertyname);
+                        getUnionAndIntersection(omac.getFiller(),ontology, hasdatavalueobj, union,intersection);
+                        hasdatavalueobj.put("union",union);
+                        hasdatavalueobj.put("intersection",intersection);
+                        object_max_cardinality.add(hasdatavalueobj);
+                    }
+                    else {
+                        JSONObject hasdatavalueobj = new JSONObject();
+                        int cardinalityvalue = omac.getCardinality();
+                        String fillerclass = omac.getFiller().asOWLClass().getIRI().getShortForm();
+                        hasdatavalueobj.put("cardinalityvalue",cardinalityvalue);
+                        hasdatavalueobj.put("propertyname",propertyname);
+                        hasdatavalueobj.put("fillerclass",fillerclass);
+                        object_max_cardinality.add(hasdatavalueobj);
+                    }
+                    System.out.println(object_max_cardinality);
+                }
+                for(OWLObjectAllValuesFrom oav: objectrestrictionVisitor.getAllValuesFromProperties()){
+                    String propertyname = oav.getProperty().asOWLObjectProperty().getIRI().getShortForm();
+                    if(!oav.getFiller().isOWLClass()) {
+                        JSONObject hasdatavalueobj = new JSONObject();
+                        JSONArray union = new JSONArray();
+                        JSONArray intersection = new JSONArray();
+                        hasdatavalueobj.put("propertyname",propertyname);
+                        getUnionAndIntersection(oav.getFiller(),ontology, hasdatavalueobj, union,intersection);
+                        hasdatavalueobj.put("union",union);
+                        hasdatavalueobj.put("intersection",intersection);
+                        object_all_values_from.add(hasdatavalueobj);
+                    }
+                    else {
+                        JSONObject hasdatavalueobj = new JSONObject();
+                        String fillerclass = oav.getFiller().asOWLClass().getIRI().getShortForm();
+                        hasdatavalueobj.put("propertyname",propertyname);
+                        hasdatavalueobj.put("fillerclass",fillerclass);
+                        object_all_values_from.add(hasdatavalueobj);
+                    }
+                    System.out.println(object_all_values_from);
+                }
+                for(OWLObjectSomeValuesFrom osv: objectrestrictionVisitor.getSomeValuesFromsProperties()){
+                    String propertyname = osv.getProperty().asOWLObjectProperty().getIRI().getShortForm();
+                    if(!osv.getFiller().isOWLClass()) {
+                        JSONArray union = new JSONArray();
+                        JSONArray intersection = new JSONArray();
+                        JSONObject hasdatavalueobj = new JSONObject();
+                        hasdatavalueobj.put("propertyname",propertyname);
+                        getUnionAndIntersection(osv.getFiller(),ontology, hasdatavalueobj, union,intersection);
+                        hasdatavalueobj.put("union",union);
+                        hasdatavalueobj.put("intersection",intersection);
+                        object_some_values_from.add(hasdatavalueobj);
+                    }
+                    else {
+                        String fillerclass = osv.getFiller().asOWLClass().getIRI().getShortForm();
+                        JSONObject hasdatavalueobj = new JSONObject();
+                        hasdatavalueobj.put("propertyname",propertyname);
+                        hasdatavalueobj.put("fillerclass",fillerclass);
+                        object_some_values_from.add(hasdatavalueobj);
+                    }
                 }
             }
+        }
+        objectropertyrestrictions.put("object_has_value",object_has_value);
+        objectropertyrestrictions.put("object_max_cardinality",object_max_cardinality);
+        objectropertyrestrictions.put("object_all_values_from",object_all_values_from);
+        objectropertyrestrictions.put("object_exact_cardinality",object_exact_cardinality);
+        objectropertyrestrictions.put("object_min_cardinality",object_min_cardinality);
+        objectropertyrestrictions.put("object_some_values_from",object_some_values_from);
+    }
+    public static void getUnionAndIntersection(OWLClassExpression oav, OWLOntology ontology, JSONObject hasdatavalueobj,JSONArray union, JSONArray intersection){
+        if(!oav.isOWLClass()) {
+            ObjectRestrictionVisitor objrestrictionVisitor = new ObjectRestrictionVisitor(Collections.singleton(ontology));
+            oav.accept(objrestrictionVisitor);
+            if (!objrestrictionVisitor.getUnionOfProperties().isEmpty()) {
+                for (OWLObjectUnionOf gg : objrestrictionVisitor.getUnionOfProperties()) {
+                    for (OWLClassExpression ff : gg.asDisjunctSet()) {
+                        if (ff.isOWLClass()) {
+                            union.add(ff.asOWLClass().getIRI().getShortForm());
+                        } else {
+                            getUnionAndIntersection(ff, ontology,hasdatavalueobj, union,intersection);
+                        }
+                    }
+                }
+            }
+            if (!objrestrictionVisitor.getIntersectionOfProperties().isEmpty()) {
+                for (OWLObjectIntersectionOf gg : objrestrictionVisitor.getIntersectionOfProperties()) {
+                    for (OWLClassExpression ff : gg.asConjunctSet()) {
+                        if (ff.isOWLClass()) {
+                            intersection.add(ff.asOWLClass().getIRI().getShortForm());
+                        } else {
+                            getUnionAndIntersection(ff, ontology,hasdatavalueobj, union,intersection);
+                        }
+                    }
+                }
+            }
+        }else {
+            System.out.println(oav.asOWLClass().getIRI().getShortForm());
         }
     }
 

@@ -1,6 +1,5 @@
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.semanticweb.HermiT.Reasoner;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLException;
@@ -16,6 +15,7 @@ import java.util.ArrayList;
 public class OPQueryBuilder {
     static OntologyClass oncl = new OntologyClass();
     private static JSONArray array = oncl.getClassArray();
+    static ArrayList<String> propertytables = new ArrayList<String>();
 
 
     public static void main(String[] args)throws OWLException, InstantiationException,
@@ -26,7 +26,7 @@ public class OPQueryBuilder {
         }
     }
 
-    public static String queryBuilderForClassProperties(JSONObject lineItem,ArrayList<String> propertytables)throws OWLException, InstantiationException,
+    public static String queryBuilderForClassProperties(JSONObject lineItem)throws OWLException, InstantiationException,
             IllegalAccessException, ClassNotFoundException{
 
         String classtablequery = "";
@@ -44,16 +44,19 @@ public class OPQueryBuilder {
                         propertyobj.get("objectpropertyname")+"_Referential_id VARCHAR(50),";
                 classtablequery  = "CREATE TRIGGER "+classtablename+"_"+propertyobj.get("objectpropertyname")+" BEFORE INSERT ON "+classtablename+
                         " FOR EACH ROW BEGIN " +
-                        "IF (!("+createFirstIfCondition(liefnames)+")) " +
+                        "IF (!("+createFirstIfCondition(liefnames,classtablename)+")) " +
                         "THEN " +
                             "SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'violated the referential integrity with user tables'; " +
                         "ELSE "+
                         createObjectPropertyTriggerIfCondition(liefnames,(String) propertyobj.get("objectpropertyname"))+
                         "END IF"+";" +
                         " END;";
+            }else{
+
             }
         }
-        propertytables.add(classtablename);
+        System.out.println(kk);
+        propertytables.add(classtablequery);
         return kk;
     }
     private static Tree getOntologyTree()throws OWLException, InstantiationException,
@@ -94,19 +97,23 @@ public class OPQueryBuilder {
         }
         return ifcondition;
     }
-    private static String createFirstIfCondition(ArrayList<String> children){
+    private static String createFirstIfCondition(ArrayList<String> children, String tablename){
         String ifcondition = "";
         int count = 0;
+        children.remove(tablename);
         for (String classname:children){
             count++;
-            if(count == children.size()) {
+            if (count == children.size()) {
                 ifcondition = ifcondition +
                         classname;
-            }else{
+            } else {
                 ifcondition = ifcondition +
                         classname + " || ";
             }
         }
         return ifcondition;
+    }
+    public static ArrayList<String> getObjectPropertytriggers(){
+        return propertytables;
     }
 }
