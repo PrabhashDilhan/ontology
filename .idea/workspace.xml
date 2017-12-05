@@ -2,18 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a85aaf45-8871-4eb1-8759-5506ff6450fb" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/CreateTables.class" afterPath="$PROJECT_DIR$/target/classes/CreateTables.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/DataBaseConnection.class" afterPath="$PROJECT_DIR$/target/classes/DataBaseConnection.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/LoadOntology.class" afterPath="$PROJECT_DIR$/target/classes/LoadOntology.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/OPQueryBuilder.class" afterPath="$PROJECT_DIR$/target/classes/OPQueryBuilder.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/OntologyClass.class" afterPath="$PROJECT_DIR$/target/classes/OntologyClass.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/StringQueryBuilder.class" afterPath="$PROJECT_DIR$/target/classes/StringQueryBuilder.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/DataBaseConnection.java" afterPath="$PROJECT_DIR$/src/main/java/DataBaseConnection.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/LoadOntology.java" afterPath="$PROJECT_DIR$/src/main/java/LoadOntology.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/OPQueryBuilder.java" afterPath="$PROJECT_DIR$/src/main/java/OPQueryBuilder.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/OntologyClass.java" afterPath="$PROJECT_DIR$/src/main/java/OntologyClass.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/StringQueryBuilder.java" afterPath="$PROJECT_DIR$/src/main/java/StringQueryBuilder.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -95,8 +84,8 @@
       <file leaf-file-name="OntologyClass.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/OntologyClass.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="221">
-              <caret line="421" column="103" lean-forward="false" selection-start-line="421" selection-start-column="103" selection-end-line="421" selection-end-column="103" />
+            <state relative-caret-position="282">
+              <caret line="555" column="10" lean-forward="false" selection-start-line="555" selection-start-column="10" selection-end-line="555" selection-end-column="10" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -116,6 +105,7 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>Sys</find>
+      <find>Syste</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -842,12 +832,12 @@
       <workItem from="1510432697685" duration="36317000" />
       <workItem from="1511386987703" duration="1545000" />
       <workItem from="1511810460913" duration="5122000" />
-      <workItem from="1512158528311" duration="21241000" />
+      <workItem from="1512158528311" duration="22628000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="404960000" />
+    <option name="totallyTimeSpent" value="406347000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1271,8 +1261,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/OntologyClass.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="421" column="103" lean-forward="false" selection-start-line="421" selection-start-column="103" selection-end-line="421" selection-end-column="103" />
+        <state relative-caret-position="282">
+          <caret line="555" column="10" lean-forward="false" selection-start-line="555" selection-start-column="10" selection-end-line="555" selection-end-column="10" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
