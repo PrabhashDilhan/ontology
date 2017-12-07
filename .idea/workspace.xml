@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a85aaf45-8871-4eb1-8759-5506ff6450fb" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/OPQueryBuilder.java" afterPath="$PROJECT_DIR$/src/main/java/OPQueryBuilder.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/OntologyClass.java" afterPath="$PROJECT_DIR$/src/main/java/OntologyClass.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -30,7 +31,7 @@
       <file leaf-file-name="LoadOntology.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/LoadOntology.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="23">
+            <state relative-caret-position="210">
               <caret line="14" column="47" lean-forward="false" selection-start-line="14" selection-start-column="47" selection-end-line="14" selection-end-column="47" />
               <folding />
             </state>
@@ -40,8 +41,8 @@
       <file leaf-file-name="StringQueryBuilder.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/StringQueryBuilder.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1017">
-              <caret line="231" column="61" lean-forward="true" selection-start-line="231" selection-start-column="61" selection-end-line="231" selection-end-column="61" />
+            <state relative-caret-position="266">
+              <caret line="49" column="17" lean-forward="true" selection-start-line="49" selection-start-column="17" selection-end-line="49" selection-end-column="19" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -59,12 +60,13 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="OPQueryBuilder.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="OPQueryBuilder.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/OPQueryBuilder.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-810">
-              <caret line="6" column="55" lean-forward="true" selection-start-line="6" selection-start-column="55" selection-end-line="6" selection-end-column="55" />
+            <state relative-caret-position="2772">
+              <caret line="132" column="137" lean-forward="false" selection-start-line="132" selection-start-column="137" selection-end-line="132" selection-end-column="137" />
               <folding>
+                <element signature="imports" expanded="true" />
                 <element signature="e#684#692#0" expanded="true" />
               </folding>
             </state>
@@ -81,11 +83,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="OntologyClass.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="OntologyClass.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/OntologyClass.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="282">
-              <caret line="555" column="10" lean-forward="false" selection-start-line="555" selection-start-column="10" selection-end-line="555" selection-end-column="10" />
+            <state relative-caret-position="-462">
+              <caret line="212" column="12" lean-forward="false" selection-start-line="212" selection-start-column="12" selection-end-line="212" selection-end-column="12" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -106,6 +108,7 @@
     <findStrings>
       <find>Sys</find>
       <find>Syste</find>
+      <find>System</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -148,8 +151,8 @@
         <option value="$PROJECT_DIR$/src/main/java/DataBaseConnection.java" />
         <option value="$PROJECT_DIR$/src/main/java/StringQueryBuilder.java" />
         <option value="$PROJECT_DIR$/src/main/java/LoadOntology.java" />
-        <option value="$PROJECT_DIR$/src/main/java/OPQueryBuilder.java" />
         <option value="$PROJECT_DIR$/src/main/java/OntologyClass.java" />
+        <option value="$PROJECT_DIR$/src/main/java/OPQueryBuilder.java" />
       </list>
     </option>
   </component>
@@ -366,7 +369,7 @@
       <recent name="F:\test\src\main\neo4j" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.OntologyClass">
+  <component name="RunManager" selected="Application.OPQueryBuilder">
     <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
       <module name="" />
       <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
@@ -769,9 +772,9 @@
     <configuration default="true" type="osgi.bnd.run" factoryName="Test Launcher (JUnit)">
       <method />
     </configuration>
-    <configuration default="false" name="OntologyClass" type="Application" factoryName="Application" nameIsGenerated="true">
+    <configuration default="false" name="OPQueryBuilder" type="Application" factoryName="Application" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <option name="MAIN_CLASS_NAME" value="OntologyClass" />
+      <option name="MAIN_CLASS_NAME" value="OPQueryBuilder" />
       <option name="VM_PARAMETERS" value="" />
       <option name="PROGRAM_PARAMETERS" value="" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
@@ -785,7 +788,7 @@
       <method />
     </configuration>
     <list size="1">
-      <item index="0" class="java.lang.String" itemvalue="Application.OntologyClass" />
+      <item index="0" class="java.lang.String" itemvalue="Application.OPQueryBuilder" />
     </list>
   </component>
   <component name="ShelveChangesManager" show_recycled="false">
@@ -832,12 +835,12 @@
       <workItem from="1510432697685" duration="36317000" />
       <workItem from="1511386987703" duration="1545000" />
       <workItem from="1511810460913" duration="5122000" />
-      <workItem from="1512158528311" duration="22628000" />
+      <workItem from="1512158528311" duration="32086000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="406347000" />
+    <option name="totallyTimeSpent" value="415805000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -904,7 +907,7 @@
           <properties />
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="301" />
+      <option name="time" value="305" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1183,22 +1186,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/CreateTables.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="65">
-          <caret line="12" column="58" lean-forward="false" selection-start-line="12" selection-start-column="58" selection-end-line="12" selection-end-column="58" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/LoadOntology.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="23">
-          <caret line="14" column="47" lean-forward="false" selection-start-line="14" selection-start-column="47" selection-end-line="14" selection-end-column="47" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/DataRestrictionVisitor.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="21">
@@ -1223,20 +1210,44 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/OPQueryBuilder.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/CreateTables.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-810">
-          <caret line="6" column="55" lean-forward="true" selection-start-line="6" selection-start-column="55" selection-end-line="6" selection-end-column="55" />
-          <folding>
-            <element signature="e#684#692#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="65">
+          <caret line="12" column="58" lean-forward="false" selection-start-line="12" selection-start-column="58" selection-end-line="12" selection-end-column="58" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/StringQueryBuilder.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1017">
-          <caret line="231" column="61" lean-forward="true" selection-start-line="231" selection-start-column="61" selection-end-line="231" selection-end-column="61" />
+        <state relative-caret-position="266">
+          <caret line="49" column="17" lean-forward="true" selection-start-line="49" selection-start-column="17" selection-end-line="49" selection-end-column="19" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/LoadOntology.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="14" column="47" lean-forward="false" selection-start-line="14" selection-start-column="47" selection-end-line="14" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0/src.zip!/java/net/URLClassLoader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="74">
+          <caret line="371" column="0" lean-forward="false" selection-start-line="371" selection-start-column="0" selection-end-line="371" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/OntologyClass.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-462">
+          <caret line="212" column="12" lean-forward="false" selection-start-line="212" selection-start-column="12" selection-end-line="212" selection-end-column="12" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1245,26 +1256,19 @@
     </entry>
     <entry file="jar://C:/Program Files/Java/jdk1.8.0/src.zip!/java/lang/ClassLoader.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="84">
+        <state relative-caret-position="525">
           <caret line="435" column="0" lean-forward="false" selection-start-line="435" selection-start-column="0" selection-end-line="435" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0/src.zip!/java/net/URLClassLoader.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/OPQueryBuilder.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="211">
-          <caret line="371" column="0" lean-forward="false" selection-start-line="371" selection-start-column="0" selection-end-line="371" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/OntologyClass.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="282">
-          <caret line="555" column="10" lean-forward="false" selection-start-line="555" selection-start-column="10" selection-end-line="555" selection-end-column="10" />
+        <state relative-caret-position="2772">
+          <caret line="132" column="137" lean-forward="false" selection-start-line="132" selection-start-column="137" selection-end-line="132" selection-end-column="137" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#684#692#0" expanded="true" />
           </folding>
         </state>
       </provider>

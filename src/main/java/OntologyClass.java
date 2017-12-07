@@ -31,55 +31,43 @@ public class OntologyClass {
         array = createDataBaseTables(classes,ontology);
     }
     private static Set<OWLClass>  getSupperClasses(OWLOntology ontology, OWLClass dd){
-        //System.out.println("\tSub classes");
         OWLReasoner reasoner = new StructuralReasonerFactory().createReasoner(ontology);
         Set<OWLClass> cc = new HashSet<OWLClass>();
         for(OWLClass subclass:reasoner.getSuperClasses(dd,true).getFlattened()){
-            //System.out.println("\t\t +:" + subclass.getIRI().getShortForm());
             cc.add(subclass);
         }
         return cc;
     }
     private static Set<OWLObjectProperty>  getObjectPropertyDomain(OWLOntology ontology, OWLClass dd){
-        //System.out.println(" \tObject Property Domain");
 
         Set<OWLObjectProperty> ff = new HashSet<OWLObjectProperty>();
         for (OWLObjectPropertyDomainAxiom op : ontology.getAxioms(AxiomType.OBJECT_PROPERTY_DOMAIN)) {
             if (op.getDomain().equals(dd)) {
                 for(OWLObjectProperty oop : op.getObjectPropertiesInSignature()){
-                    //System.out.println("\t\t +: " + oop.getIRI().getShortForm());
-                    //System.out.println("\t\t\t\t :"+ );
                     ff.add(oop);
                 }
-                //System.out.println("\t\t +: " + op.getProperty().getNamedProperty().getIRI().getShortForm());
             }
         }
         return ff;
     }
     private static Set<OWLDataProperty>  getDataPropertyDomain(OWLOntology ontology, OWLClass dd){
-        //System.out.println(" \tData Property Domain");
         Set<OWLDataProperty> ff = new HashSet<OWLDataProperty>();
         for (OWLDataPropertyDomainAxiom dp : ontology.getAxioms(AxiomType.DATA_PROPERTY_DOMAIN)) {
             if (dp.getDomain().equals(dd)){
                 for(OWLDataProperty odp : dp.getDataPropertiesInSignature()){
-                    //System.out.println("\t\t +: " + odp.getIRI().getShortForm());
                     ff.add(odp);
                 }
-                //System.out.println("\t\t +:" + dp.getProperty());
             }
         }
         return ff;
     }
     private static Set<OWLObjectProperty>  getObjectPropertyRange(OWLOntology ontology, OWLClass dd){
-        //System.out.println(" \tData Property Domain");
         Set<OWLObjectProperty> ff = new HashSet<OWLObjectProperty>();
         for (OWLObjectPropertyRangeAxiom dp : ontology.getAxioms(AxiomType.OBJECT_PROPERTY_RANGE)) {
             if (dp.getRange().equals(dd)){
                 for(OWLObjectProperty odp : dp.getObjectPropertiesInSignature()){
-                    //System.out.println("\t\t +: " + odp.getIRI().getShortForm());
                     ff.add(odp);
                 }
-                //System.out.println("\t\t +:" + dp.getProperty());
             }
         }
         return ff;
@@ -101,6 +89,7 @@ public class OntologyClass {
                 objectproperty.put("rangeclassname", dpraString);
                 for (OWLFunctionalObjectPropertyAxiom fdp : ontology.getFunctionalObjectPropertyAxioms(dp)) {
                     String fdpString = fdp.toString();
+                    System.out.println();
                     if (fdpString.contains("#")) {
                         fdpString = fdpString.substring(
                                 fdpString.indexOf("#") + 1,
@@ -109,7 +98,6 @@ public class OntologyClass {
                     if (fdpString.equals(dp.getIRI().getShortForm())) {
                         objectproperty.put("isfunctional", true);
                     }
-                    //System.out.println(fdp.getAxiomType().compareTo(AxiomType.FUNCTIONAL_DATA_PROPERTY));
                 }
             }
             for(OWLInverseObjectPropertiesAxiom iop : ontology.getInverseObjectPropertyAxioms(dp)){
@@ -146,8 +134,8 @@ public class OntologyClass {
                 }
                 if (fdpString.equals(dp.getIRI().getShortForm())) {
                     objectproperty.put("isfunctional", true);
+                    System.out.println();
                 }
-                //System.out.println(fdp.getAxiomType().compareTo(AxiomType.FUNCTIONAL_DATA_PROPERTY));
             }
             for(OWLInverseObjectPropertiesAxiom iop : ontology.getInverseObjectPropertyAxioms(dp)){
                 String iopString = iop.toString();
@@ -159,6 +147,7 @@ public class OntologyClass {
                 objectproperty.put("inverseobjectproperty", iopString);
 
                 if(iop.isOfType(AxiomType.INVERSE_FUNCTIONAL_OBJECT_PROPERTY)){
+                    System.out.println();
                     objectproperty.put("inverseobjectpropertyisfunctional", true);
                 }
             }
@@ -191,11 +180,9 @@ public class OntologyClass {
                         if (fdpString.equals(dpraString)) {
                             dataproperty.put("isfunctional", true);
                         }
-                        //System.out.println(fdp.getAxiomType().compareTo(AxiomType.FUNCTIONAL_DATA_PROPERTY));
                     }
                 }
                 datapropertyarray.add(dataproperty);
-                //for(OWLDataMinCardinality odpmc:ontology.)
             }
         return datapropertyarray;
 
@@ -206,26 +193,24 @@ public class OntologyClass {
 
 
         for (OWLClass cls : classes) {
-            //if (cls.getIRI().getShortForm().equals("MeatyPizza")) {
+            if (cls.getIRI().getShortForm().equals("MeatyPizza")) {
                 JSONObject ontoloyclassess = new JSONObject();
                 JSONArray superclsarry = new JSONArray();
                 ontoloyclassess.put("classname", cls.getIRI().getShortForm());
                 Set<OWLClass> supperclasses = getSupperClasses(ontology, cls);
                 int count = 0;
                 for (OWLClass suppercls : supperclasses) {
-                    //System.out.println("\t\t"+suppercls.getIRI().getShortForm());
                     superclsarry.add(suppercls.getIRI().getShortForm());
                 }
                 ontoloyclassess.put("supperclasses", superclsarry);
                 ontoloyclassess.put("dataproperties", getdataproprtydetailsforspecificlass(cls, ontology));
-                //System.out.println("\tDataproperties:");
                 ontoloyclassess.put("objectproperties", getobjectpropertydetailsforspecifclass(cls, ontology));
                 ontoloyclassess.put("objectpropertyrange", getobjectpropertyrangedetailsforspecifclass(cls, ontology));
                 ontoloyclassess.put("datapropertyrestrictions", getdatapropertyclassaxioms(cls, ontology));
                 ontoloyclassess.put("objectpropertyrestrictions",getobjectpropertyclassaxioms(cls,ontology));
                 getobjectpropertyclassaxioms(cls, ontology);
                 classarray.add(ontoloyclassess);
-            //}
+            }
         }
         return classarray;
     }
@@ -252,24 +237,18 @@ public class OntologyClass {
                 }
                 for(OWLDataMaxCardinality dmc:datarestrictionVisitor.getMaxCardinalityProperties()){
                     data_max_cardinality.add(getMaxCardinalityDetails(dmc,ontology));
-                    //System.out.println(data_max_cardinality);
                 }
                 for(OWLDataAllValuesFrom dmc:datarestrictionVisitor.getAllValuesFromProperties()){
                     data_all_values_from.add(getAllValuesFromsDetails(dmc,ontology));
-                    //System.out.println(data_all_values_from);
-                    //System.out.println(getSomeValuesFromsDetails(dmc,ontology));
                 }
                 for(OWLDataExactCardinality dmc:datarestrictionVisitor.getExactCardinalityProperties()){
                     data_exact_cardinality.add(getExactCardinalityDetails(dmc,ontology));
-                    //System.out.println(data_exact_cardinality);
                 }
                 for(OWLDataMinCardinality dmc:datarestrictionVisitor.getMinCardinalityProperties()){
                     data_min_cardinality.add(getMinCardinalityDetails(dmc,ontology));
-                    //System.out.println(data_min_cardinality);
                 }
                 for(OWLDataSomeValuesFrom dmc:datarestrictionVisitor.getSomeValuesFromsProperties()){
                     data_some_values_from.add(getSomeValuesFromsDetails(dmc,ontology));
-                    //System.out.println(getSomeValuesFromsDetails(dmc,ontology));
                 }
             }
         }
@@ -553,7 +532,7 @@ public class OntologyClass {
         objectropertyrestrictions.put("object_exact_cardinality",object_exact_cardinality);
         objectropertyrestrictions.put("object_min_cardinality",object_min_cardinality);
         objectropertyrestrictions.put("object_some_values_from",object_some_values_from);
-        //System.out.println(objectropertyrestrictions);
+        System.out.println(objectropertyrestrictions);
         return objectropertyrestrictions;
     }
     public static void getUnionAndIntersection(OWLClassExpression oav, OWLOntology ontology, JSONObject hasdatavalueobj,JSONArray union, JSONArray intersection){

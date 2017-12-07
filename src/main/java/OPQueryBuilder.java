@@ -22,7 +22,7 @@ public class OPQueryBuilder {
             IllegalAccessException, ClassNotFoundException{
         for (Object obj:array){
             JSONObject lineitem = (JSONObject)obj;
-            //System.out.println(queryBuilderForClassProperties(lineitem));
+            System.out.println(queryBuilderForClassProperties(lineitem));
         }
     }
 
@@ -36,6 +36,8 @@ public class OPQueryBuilder {
         LevelNodes ln = tree.selectLeafNodes(classtablename);
         ArrayList<String> liefnames = ln.getLeafNodes();
         JSONArray objectproperties = (JSONArray)lineItem.get("objectproperties");
+        JSONObject objectpropertyrestrictions = (JSONObject) lineItem.get("objectpropertyrestrictions");
+        JSONArray hasvalue = (JSONArray)objectpropertyrestrictions.get("object_has_value");
         //here have to check whether they are restricted or not
         for(Object propertyobject:objectproperties){
             JSONObject propertyobj = (JSONObject) propertyobject;
@@ -51,6 +53,7 @@ public class OPQueryBuilder {
                         createObjectPropertyTriggerIfCondition(liefnames,(String) propertyobj.get("objectpropertyname"))+
                         "END IF"+";" +
                         " END;";
+                setHasValue(hasvalue,classtablename,propertyobj);
             }else{
 
             }
@@ -89,7 +92,7 @@ public class OPQueryBuilder {
             ifcondition = ifcondition +
                     "IF(new."+propertyname+"_Referential_id"+"="+classname+")"+
                     "THEN"+
-                        " IF (!((select id from "+classname+ " where Referential_id="+propertyname+"_Referential_id"+")=new."+propertyname+")) " +
+                        " IF (!((select ID from "+classname+ " where Referential_id="+propertyname+"_Referential_id"+")=new."+propertyname+")) " +
                         "THEN " +
                         "SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'violated the referential integrity with "+classname+" table'; " +
                         "END IF"+";"+
@@ -109,6 +112,51 @@ public class OPQueryBuilder {
             } else {
                 ifcondition = ifcondition +
                         classname + " || ";
+            }
+        }
+        return ifcondition;
+    }
+    private static void setHasValue(JSONArray restrictions,String classtablename,JSONObject propertyobj){
+        String trigger  = "";
+        int count = 1;
+        if(!restrictions.isEmpty()){
+            System.out.println("dfdsfds");
+            for(Object jj:restrictions) {
+                JSONObject hasvalue = (JSONObject) jj;
+                String propertyname = (String)hasvalue.get("propertyname");
+                JSONArray fillers = (JSONArray)hasvalue.get("fillerclasses") ;
+                trigger =
+                        "CREATE TRIGGER " + classtablename + "_" + propertyobj.get("objectpropertyname") + "_hasvaluetrigger"+count+ " BEFORE INSERT ON " + classtablename +
+                                " FOR EACH ROW BEGIN " +
+                                "IF (!("+createIfConditionHasValueTrigger(fillers,propertyname,hasvalue)+")) " +
+                                "THEN " +
+                                "SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'has value restriction should be with the instance "+hasvalue.get("invidualname")+" in class'; " +
+                                "END IF" + ";" +
+                                " END;";
+                count++;
+                System.out.println(trigger);
+            }
+        }
+    }
+    private static String createIfConditionHasValueTrigger(JSONArray fillers,String propertyname, JSONObject propertyobj){
+        String ifcondition = "";
+        int count = 0;
+        for (Object hh:fillers){
+            String classname = (String)hh;
+            count++;
+            if (count == fillers.size()) {
+                ifcondition = ifcondition +
+                    "(new." + propertyname + "_Referential_id" + "=" + classname +
+                    " && (select ID from " + classname +
+                    " where Instance_name="+propertyobj.get("invidualname")+") = new." +
+                        propertyname + " )";
+            } else {
+                ifcondition = ifcondition +
+                    "(new." + propertyname + "_Referential_id" + "=" + classname +
+                    " && (select ID from " + classname +
+                    " where Instance_name="+propertyobj.get("invidualname")+") = new." +
+                        propertyname + " )"
+                    + " && ";
             }
         }
         return ifcondition;
